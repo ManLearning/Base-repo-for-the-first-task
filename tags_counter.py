@@ -1,9 +1,9 @@
 import pandas as pd
 
 
-with open("direct_search_post_jsonb1.csv", encoding="utf-8") as csvfile:
+with open("normalized_dataset.csv", encoding="utf-8") as csvfile:
     df = pd.read_csv(csvfile, sep=';')
-    tags = df.tgs  # change tgs to column name if needed
+    tags = df.Tags  # change tgs to column name if needed
 
     tags_dict = {}
     for line in tags:
