@@ -2,35 +2,30 @@ import pandas as pd
 
 
 def generate_marked_dataset(unmarked_dataset: pd.DataFrame, tags_to_include: list):
-    interior_unmarked_dataset = unmarked_dataset
-    marked_dataset: pd.DataFrame = interior_unmarked_dataset.drop(
+    marked_dataset: pd.DataFrame = unmarked_dataset.drop(
         labels="Tags", axis="columns")
     for single_tag in map(str.lower, tags_to_include):
-        marked_dataset[single_tag] = interior_unmarked_dataset["Tags"].apply(
+        marked_dataset[single_tag] = unmarked_dataset["Tags"].apply(
             lambda x: 1 if single_tag in x else 0)
     return marked_dataset
 
 
-if __name__ == "__main__":
-    unmarked_dataset = pd.read_csv(
-        "./direct_search_post_jsonb1.csv", sep=";")
-
-    unmarked_dataset.rename(columns={
-        "ttl": "Title",
-        "txt": "FormattedText",
-        "cln_txt": "PlainText",
-        "tgs": "Tags"
-    }, inplace=True)
-
-    unmarked_dataset["Tags"] = unmarked_dataset["Tags"]\
-        .apply(
-            lambda x: "" if not isinstance(x, str) else x)\
-        .apply(
-            lambda x: x.lower().split(","))
-
-    tags_to_include = ['растениеводство']
-
+def generate_and_export_marked_dataset(unmarked_dataset: pd.DataFrame, tags_to_include: list):
     filtered_dataset = generate_marked_dataset(unmarked_dataset,
                                                tags_to_include)
+    filtered_dataset.to_csv(
+        "./filtered_dataset_{}.csv".format("_".join(tags_to_include)), index=False, sep=";")
 
-    print(filtered_dataset[filtered_dataset[tags_to_include[0]] == 1])
+
+# This part is just for demonstration
+if __name__ == "__main__":
+    unmarked_dataset = pd.read_csv(
+        "./normalized_dataset.csv", sep=";")
+
+    unmarked_dataset["Tags"] = unmarked_dataset["Tags"].apply(
+        lambda x: x.split(',') if isinstance(x, str) else [])
+
+    tags_to_include = ['животноводство', 'растениеводство']
+
+    generate_and_export_marked_dataset(unmarked_dataset,
+                                       tags_to_include)

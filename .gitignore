@@ -1,0 +1,8 @@
+error_checker.py
+unique_tags1.csv
+unique_tags2.csv
+unique_tags3.csv
+unique_tags_unverified.csv
+tags_getter.py
+tags_renamer.py
+.vscode/
